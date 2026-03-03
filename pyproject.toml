@@ -1,0 +1,11 @@
+[project]
+name = "arxrate"
+version = "0.1.0"
+description = "Veille scientifique automatisée via l'API ArXiv"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "arxiv>=2.1.3",
+    "python-dotenv>=1.0.1",
+    "pydantic>=2.0.0",
+]
