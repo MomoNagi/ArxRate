@@ -1,5 +1,7 @@
+import os
 from crewai import Agent, Crew, Process, Task
 from crewai.project import CrewBase, agent, crew, task
+from crewai import LLM
 from arxgen.tools.arxiv_tool import ArxivSearchTool
 import os
 
@@ -11,17 +13,20 @@ class ArxGenCrew:
     tasks_config = "config/tasks.yaml"
 
     def __init__(self) -> None:
-        model_name = os.getenv("OLLAMA_MODEL", "phi3:latest")
-        self.llm_config = f"ollama/{model_name}"
-
+        self.ollama_llm = LLM(
+            model=f"ollama/{os.getenv('OLLAMA_MODEL', 'llama3.2')}",
+            base_url=os.getenv("OLLAMA_BASE_URL", "http://localhost:11434"),
+            temperature=0.1,
+        )
+    
     @agent
     def researcher(self) -> Agent:
         return Agent(
             config=self.agents_config["researcher"],
             tools=[ArxivSearchTool()],
-            llm=self.llm_config,
-            base_url="http://localhost:11434",
+            llm=self.ollama_llm,
             verbose=True,
+            max_iter=3,
             allow_delegation=False
         )
 
@@ -29,25 +34,23 @@ class ArxGenCrew:
     def analyst(self) -> Agent:
         return Agent(
             config=self.agents_config["analyst"],
-            llm=self.llm_config,
-            base_url="http://localhost:11434",
-            verbose=True,
-            allow_delegation=False
+            llm=self.ollama_llm,
+            verbose=True
         )
 
     @task
-    def retrieval_task(self) -> Task:
+    def task_retrieval(self) -> Task:
         return Task(
-            config=self.tasks_config["retrieval_task"],
+            config=self.tasks_config["task_retrieval"],
             agent=self.researcher()
         )
 
     @task
-    def extraction_task(self) -> Task:
+    def task_analyse(self) -> Task:
         return Task(
-            config=self.tasks_config["extraction_task"],
+            config=self.tasks_config["task_analyse"],
             agent=self.analyst(),
-            context=[self.retrieval_task()],
+            context=[self.task_retrieval()],
             output_file="src/arxgen/outputs/report.md"
         )
 

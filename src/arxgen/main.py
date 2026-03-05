@@ -1,12 +1,11 @@
 import os
-from pathlib import Path
-from dotenv import load_dotenv
-
-load_dotenv()
+from dotenv import load_dotenv  
 from arxgen.crew import ArxGenCrew
 
+load_dotenv()
+
 def run():
-    base_url = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
+    base_url = os.getenv("OLLAMA_BASE_URL")
     model = os.getenv("OLLAMA_MODEL")
     print(f"Connexion à Ollama : {base_url} (Modèle : {model})")
 
@@ -17,7 +16,7 @@ def run():
         "topics": topics,
         "max_results": int(max_results)
     }
-    os.makedirs("outputs", exist_ok=True)
+    os.makedirs("src/arxgen/outputs", exist_ok=True)
 
     print(f"## Lancement de la veille sur : {topics}...")
     ArxGenCrew().crew().kickoff(inputs=inputs)

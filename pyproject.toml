@@ -1,18 +1,23 @@
 [project]
 name = "arxgen"
 version = "0.1.0"
-description = "Veille scientifique automatisée via l'API ArXiv"
+description = "Veille scientifique ArXiv avec CrewAI et Ollama"
 readme = "README.md"
-requires-python = ">=3.12"
+requires-python = ">=3.13"
 dependencies = [
-    "crewai>=0.28.0",
-    "crewai[tools]>=0.28.0",
+    "crewai[tools]>=0.100.0",      # On passe sur les versions modernes (stables pour 3.13)
     "arxiv>=2.1.3",
+    "langchain-community>=0.3.0",
+    "langchain-ollama>=0.2.0",
+    "litellm>=1.50.0",             # Crucial pour le pont Ollama
+    "pydantic>=2.10.0",
     "python-dotenv>=1.0.1",
-    "pydantic>=2.0.0",
     "PyYAML>=6.0.1",
-    "langchain-ollama>=1.0.1",
-    "langchain-community>=0.0.30",
-    "litellm>=1.44.0",
-    "openai~=1.83.0",
+    "fastapi>=0.115.0",            # Version compatible avec Starlette récent
+    "starlette>=0.40.0",
+]
+
+[tool.uv]
+dev-dependencies = [
+    "pytest>=8.0.0",
 ]

@@ -1,21 +1,19 @@
-retrieval_task:
+task_retrieval:
   description: >
-    Interroger l'API ArXiv pour les thématiques suivantes : {topics}.
-    Il faut filtrer les {max_results} résultats les plus récents. 
-    Pour chaque papier, on doit récupérer impérativement : le titre exact, l'abstract (le résumé) complet, 
-    la date de publication et l'URL du PDF.
+    Exécute une SEULE recherche sur l'API ArXiv pour les thématiques : {topics}.
+    Récupère exactement {max_results} résultats. 
+    Pour chaque papier, extrait : titre, abstract complet, date et URL du PDF.
+    Une fois les données obtenues, arrête la recherche immédiatement.
   expected_output: >
-    Un catalogue structuré de papiers de recherche, prêt pour une analyse approfondie.
+    Une liste brute contenant le titre, l'abstract, la date et l'URL pour chaque papier trouvé.
   agent: researcher
-
-extraction_task:
+  
+task_analyse:
   description: >
-    À partir des abstracts fournis, analyse chaque papier. 
-    Identifie la problématique centrale, la solution technique (architecture/algorithme) 
-    et les métriques de succès. Compare brièvement à ce qui existe déjà si l'abstract le mentionne.
-    Rédige le tout en Français sous forme de rapport structuré.
+    Utilise EXCLUSIVEMENT les abstracts fournis par le researcher. 
+    Pour chaque papier : identifie la problématique, la solution technique et les métriques.
+    Rédige le rapport final en Français. 
+    Ne demande pas de recherches supplémentaires.
   expected_output: >
-    Un rapport de veille technologique en Markdown. Chaque papier doit avoir sa section avec 
-    des titres clairs, une fiche technique de 10 lignes maximum, et un lien vers le PDF.
+    Un rapport Markdown structuré avec : Titre, Fiche technique (10 lignes max), et Lien PDF.
   agent: analyst
-  output_file: rapport_veille.md
